@@ -1,8 +1,10 @@
 const extractor = require('unfluff')
+import { NextApiRequest, NextApiResponse } from "next"
 
-export default function handler(req, res) {
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const blogPost = {
-    url: "https://www.jamesqquick.com/blog/top-5-pieces-of-advice-for-aspiring-and-learning-developers"
+    url: "https://kentcdodds.com/blog/how-to-react"
+    // url: "https://www.jamesqquick.com/blog/top-5-pieces-of-advice-for-aspiring-and-learning-developers"
   }
 
   fetch(blogPost.url).then(async function (response) {
@@ -12,7 +14,7 @@ export default function handler(req, res) {
   }).then(async function (data) {
     // This is the JSON from our response
     const extractedData = await extractor(data)
-    console.log(extractedData)
+    // console.log(extractedData)
 
     // Send response
     res.statusCode = 200
@@ -28,8 +30,4 @@ export default function handler(req, res) {
       IMA: 'teapot'
     }))
   });
-
-
-
-
 }

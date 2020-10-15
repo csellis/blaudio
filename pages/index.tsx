@@ -5,7 +5,7 @@ export async function getStaticProps() {
   // Call an external API endpoint to get posts.
   // You can use any data fetching library
 
-  const res = await fetch('http://localhost:3000/api/extractBlogPost')
+  const res = await fetch('http://localhost:3001/api/extractBlogPost')
   const posts = await res.json()
 
   // By returning { props: posts }, the Blog component
@@ -16,12 +16,27 @@ export async function getStaticProps() {
     },
   }
 }
-export default function IndexPage({ posts }) {
 
-  const [article, setArticle] = useState({})
+type Props = {
+  posts: {
+    text: string
+    title: string
+  }
+}
+
+interface IArticle {
+  text: string;
+  title: string;
+}
+
+
+
+export default function IndexPage({ posts }: Props) {
+
+  const [article, setArticle] = useState<IArticle>(posts)
 
   useEffect(() => {
-    console.log(posts)
+    // console.log(posts)
     posts.text = posts.text.replace(/(?:\r\n|\r|\n)/g, '<br>');
     setArticle(posts)
   }, [posts])
