@@ -5,7 +5,7 @@ export async function getStaticProps() {
   // Call an external API endpoint to get posts.
   // You can use any data fetching library
 
-  const res = await fetch('http://localhost:3001/api/extractBlogPost')
+  const res = await fetch('http://localhost:3000/api/extractBlogPost')
   const posts = await res.json()
 
   // By returning { props: posts }, the Blog component
@@ -29,19 +29,38 @@ interface IArticle {
   title: string;
 }
 
-
-
 export default function IndexPage({ posts }: Props) {
 
   const [article, setArticle] = useState<IArticle>(posts)
+  const isBrowser = (): Boolean => typeof window !== "undefined"
+
+  // if (isBrowser()) {
+  const msg = new SpeechSynthesisUtterance();
+  const voices = [];
+
+  async function generateVoices() {
+    const voi = await speechSynthesis.getVoices();
+    voi.forEach(voice => voices.push(voice))
+  }
+
+  generateVoices()
+
+
+  console.log(voices)
+  function speakMessage() {
+    msg.voice = voices.find(voice => voice.lang === "en")
+    speechSynthesis.speak(article.text)
+  }
+  // }
+
 
   useEffect(() => {
-    // console.log(posts)
+    // console.log(posts.text)
     posts.text = posts.text.replace(/(?:\r\n|\r|\n)/g, '<br>');
     setArticle(posts)
   }, [posts])
 
-  function createMarkup() { return { __html: article.text }; };
+  function createMarkup() { return { __html: article.text } };
 
   return (
     <div>
@@ -50,9 +69,10 @@ export default function IndexPage({ posts }: Props) {
         <h1 className="text-5xl text-center text-accent-1">
           {article.title}
         </h1>
+        <button onClick={() => speakMessage()}>Speak</button>
         <div className="mt-8 w-3/5 mx-auto border-gray-700 border-dashed border-2 p-4" dangerouslySetInnerHTML={createMarkup()}>
         </div>
       </div>
-    </div>
+    </div >
   )
 }
